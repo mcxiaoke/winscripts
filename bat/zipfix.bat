@@ -2,85 +2,85 @@
 setlocal enabledelayedexpansion
 echo =======================================
 echo -
-echo ZipFixС����
-echo ������ 2024.04.06
-echo ʹ��ZipUnicode���޸��ļ�������
-echo �ݹ����Ŀ¼���޸����ѹZIP�ļ�
-echo ʹ��UTF8���봴����ZIP�ļ�
-echo �÷��� zipfix �ļ�Ŀ¼ [ָ������]
+echo ZipFix小工具
+echo 创建于 2024.04.06
+echo 使用ZipUnicode库修复文件名乱码
+echo 递归遍历目录，修复或解压ZIP文件
+echo 使用UTF8编码创建新ZIP文件
+echo 用法： zipfix 文件目录 [指定编码]
 echo -
 echo =======================================
 
-rem ����Ƿ��ṩ��Ŀ¼����
+rem 检查是否提供了目录参数
 if "%~1"=="" (
-    echo ���ṩĿ¼·����Ϊ����
+    echo 请提供目录路径作为参数
     exit /b 1
 )
 
-rem ���ò���ΪҪ������Ŀ¼
-rem ��������Ŀ¼����·��
+rem 设置参数为要处理的目录
+rem 设置输入目录绝对路径
 set "root_dir=%~f1"
 set "encoding=%2"
 
-echo �ű�·����%~dp0
-echo ����Ŀ¼��"%root_dir%"
+echo 脚本路径：%~dp0
+echo 输入目录："%root_dir%"
 
-rem ��ʾ�û�ѡ��
-echo ��ѡ��Ҫִ�еĲ�����
-echo 1. ȡ�����˳�
-echo 2. ��ѹZIP�ļ�
-echo 3. �޸�ZIP�ļ�
-echo 4. ���ZIP�ļ�
-set /p option=�����������ţ�
+rem 提示用户选择
+echo 请选择要执行的操作：
+echo 1. 取消并退出
+echo 2. 解压ZIP文件
+echo 3. 修复ZIP文件
+echo 4. 检查ZIP文件
+set /p option=请输入操作序号：
 
-rem ����û�����
+rem 检查用户输入
 if "%option%"=="1" (
-    echo �û�ȡ����ִֹͣ�к���������
+    echo 用户取消，停止执行后续处理。
     exit /b
 ) else if "%option%"=="2" (
-    echo �û�ѡ���ѹ����
+    echo 用户选择解压操作
 ) else if "%option%"=="3" (
-    echo �û�ѡ���޸�����
+    echo 用户选择修复操作
 ) else if "%option%"=="4" (
-    echo �û�ѡ�������
+    echo 用户选择检查操作
 ) else (
-    echo ������Ч�������������� 1��2��3 �� 4��
+    echo 输入无效，请输入操作序号 1、2、3 或 4。
     exit /b
 )
 
-set /p user_encoding=ָ���ļ������룺
+set /p user_encoding=指定文件名编码：
 
 if  defined user_encoding  (
 	set encoding="!user_encoding!"
 ) 
 
 if "!encoding!" neq "" (
-echo �ļ������룺!encoding!
+echo 文件名编码：!encoding!
 )
 
-rem ��ʾ�û�ȷ��
-set /p confirm=ȷ��ִ�к���������(���� y��yes ȷ��)
+rem 提示用户确认
+set /p confirm=确认执行后续操作吗？(输入 y或yes 确认)
 if /i not "%confirm%"=="y" (
     if /i not "%confirm%"=="yes" (
-        echo �û�ȡ����ִֹͣ�к���������
+        echo 用户取消，停止执行后续处理。
         exit /b
     )
 )
 
-rem �ݹ����Ŀ¼
+rem 递归遍历目录
 for /r "%root_dir%" %%F in (*.zip) do (
     set "current_path=%%~dpF"
 	set "fileName=%%~nxF"
 	set "nameNoExt=%%~nF"
-    rem ����ļ����Ƿ��� "_fixed" ��β�������������
+    rem 检查文件名是否以 "_fixed" 结尾，如果是则跳过
     if /i "!nameNoExt:~-6!"=="_fixed" (
-        echo �����ļ� "!fileName!"
+        echo 忽略文件 "!fileName!"
     ) else (
-	    rem echo �����ļ� %%F
-		rem ��ѹ�ļ���ͬ��Ŀ¼
+	    rem echo 处理文件 %%F
+		rem 解压文件到同名目录
 		pushd "!current_path!"
 		if "!option!"=="2" (
-			echo ��ѹ�ļ� "%%F"
+			echo 解压文件 "%%F"
 			if "!encoding!" == "" (
 				zipu --extract "!fileName!"
 			) else (
@@ -90,9 +90,9 @@ for /r "%root_dir%" %%F in (*.zip) do (
 		set "nameFixed=!nameNoExt!_fixed.zip"
 		set "fileFixed=!current_path!!nameFixed!"
 			if  exist "!fileFixed!" (
-				echo �ļ��Ѵ��� "!nameFixed!"
+				echo 文件已存在 "!nameFixed!"
 			) else (
-				echo �޸��ļ� "%%F"
+				echo 修复文件 "%%F"
 				if "!encoding!" == "" (
 					zipu --fix "!fileName!"
 				) else (
@@ -100,7 +100,7 @@ for /r "%root_dir%" %%F in (*.zip) do (
 				)			
 			)
 		) else if "!option!"=="4" (
-			echo ����ļ� "%%F"
+			echo 检查文件 "%%F"
 			if "!encoding!" == "" (
 				zipu "!fileName!"
 			) else (
@@ -115,16 +115,16 @@ endlocal
 exit /b
 
   REM for /f %%a in ('dir /s /b a*') do (
-    REM echo %%a���ļ�������Ϣ
-    REM echo %%~da�������ļ�������������Ϣ
-    REM echo %%~pa�������ļ�����·����Ϣ
-    REM echo %%~na�������ļ�����Ϣ
-    REM echo %%~xa�������ļ���׺��Ϣ
-    REM echo %%~za�������ļ���С��Ϣ
-    REM echo %%~ta�������ļ��޸�ʱ����Ϣ
-    REM echo %%~dpa�������ļ�����������������·����Ϣ
-    REM echo %%~nxa�������ļ�������׺��Ϣ
-    REM echo %%~pnxa�������ļ�����·�����ļ����ͺ�׺��Ϣ
-    REM echo %%~dpna�������ļ���������·�����ļ�����Ϣ
-    REM echo %%~dpnxa�������ļ���������·�����ļ�������׺��Ϣ
+    REM echo %%a：文件完整信息
+    REM echo %%~da：保留文件所在驱动器信息
+    REM echo %%~pa：保留文件所在路径信息
+    REM echo %%~na：保留文件名信息
+    REM echo %%~xa：保留文件后缀信息
+    REM echo %%~za：保留文件大小信息
+    REM echo %%~ta：保留文件修改时间信息
+    REM echo %%~dpa：保留文件所在驱动器和所在路径信息
+    REM echo %%~nxa：保留文件名及后缀信息
+    REM echo %%~pnxa：保留文件所在路径及文件名和后缀信息
+    REM echo %%~dpna：保留文件驱动器、路径、文件名信息
+    REM echo %%~dpnxa：保留文件驱动器、路径、文件名、后缀信息
 REM )

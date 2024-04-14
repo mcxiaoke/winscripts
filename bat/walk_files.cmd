@@ -1,38 +1,38 @@
 @echo off
 setlocal enabledelayedexpansion
 
-REM ¶ÁÈ¡ÊäÈëÄ¿Â¼
-set /p input_dir="ÇëÊäÈëÄ¿Â¼Â·¾¶: "
+REM è¯»å–è¾“å…¥ç›®å½•
+set /p input_dir="è¯·è¾“å…¥ç›®å½•è·¯å¾„: "
 
-REM Êä³ö½Å±¾Ä¿Â¼
+REM è¾“å‡ºè„šæœ¬ç›®å½•
 set "script_dir=%~dp0"
-echo ½Å±¾Ä¿Â¼: %script_dir%
+echo è„šæœ¬ç›®å½•: %script_dir%
 
-REM Êä³öµ±Ç°Ä¿Â¼
-echo µ±Ç°Ä¿Â¼: %CD%
+REM è¾“å‡ºå½“å‰ç›®å½•
+echo å½“å‰ç›®å½•: %CD%
 
-REM µİ¹é±éÀúÄ¿Â¼
+REM é€’å½’éå†ç›®å½•
 for /r "%input_dir%" %%F in (*) do (
-    REM Êä³öÎÄ¼şÍêÕûÂ·¾¶
-    echo ÍêÕûÂ·¾¶: %%F
+    REM è¾“å‡ºæ–‡ä»¶å®Œæ•´è·¯å¾„
+    echo å®Œæ•´è·¯å¾„: %%F
 
-    REM »ñÈ¡ÎÄ¼şµÄ¸¸Ä¿Â¼
+    REM è·å–æ–‡ä»¶çš„çˆ¶ç›®å½•
     for %%P in ("%%~dpF\.") do (
         set "parent_dir=%%~fP"
     )
-    echo ¸¸Ä¿Â¼: !parent_dir!
+    echo çˆ¶ç›®å½•: !parent_dir!
 
-    REM »ñÈ¡ÎÄ¼şÃû
+    REM è·å–æ–‡ä»¶å
     set "file_name=%%~nxF"
-    echo ÎÄ¼şÃû: !file_name!
+    echo æ–‡ä»¶å: !file_name!
 
-    REM »ñÈ¡´øÀ©Õ¹ÃûµÄÎÄ¼şÃû
+    REM è·å–å¸¦æ‰©å±•åçš„æ–‡ä»¶å
     set "file_name_with_extension=%%~nxF"
-    echo ´øÀ©Õ¹ÃûµÄÎÄ¼şÃû: !file_name_with_extension!
+    echo å¸¦æ‰©å±•åçš„æ–‡ä»¶å: !file_name_with_extension!
 
-    REM »ñÈ¡²»´øÀ©Õ¹ÃûµÄÎÄ¼şÃû
+    REM è·å–ä¸å¸¦æ‰©å±•åçš„æ–‡ä»¶å
     set "file_name_without_extension=%%~nF"
-    echo ²»´øÀ©Õ¹ÃûµÄÎÄ¼şÃû: !file_name_without_extension!
+    echo ä¸å¸¦æ‰©å±•åçš„æ–‡ä»¶å: !file_name_without_extension!
 
     echo.
 )

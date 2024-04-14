@@ -7,8 +7,8 @@ function RemoveFilesBySize {
         [switch]$Help
     )
 
-# 定义帮助文档
-<#
+    # 定义帮助文档
+    <#
 .SYNOPSIS
 Remove files by size parameter from a directory recursively.
 
@@ -37,16 +37,16 @@ Performs a dry run to display the files that would be removed without actually d
 
 #>
 
-# 检查是否提供了 -Help 或 --help 参数，如果提供则显示帮助信息
-if ($MyInvocation.BoundParameters.ContainsKey('Help')) {
-    Get-Help RemoveFilesBySize
-}
+    # 检查是否提供了 -Help 或 --help 参数，如果提供则显示帮助信息
+    if ($MyInvocation.BoundParameters.ContainsKey('Help')) {
+        Get-Help RemoveFilesBySize
+    }
 
-# 检查是否提供了必要参数，如果没有则显示帮助信息
-if (-not $MyInvocation.BoundParameters.ContainsKey('DirectoryPath') -or -not $MyInvocation.BoundParameters.ContainsKey('SizeThresholdKB')) {
-    Write-Host "Error: DirectoryPath and SizeThresholdKB are required."
-    Get-Help RemoveFilesBySize
-}
+    # 检查是否提供了必要参数，如果没有则显示帮助信息
+    if (-not $MyInvocation.BoundParameters.ContainsKey('DirectoryPath') -or -not $MyInvocation.BoundParameters.ContainsKey('SizeThresholdKB')) {
+        Write-Host "Error: DirectoryPath and SizeThresholdKB are required."
+        Get-Help RemoveFilesBySize
+    }
 
     # 如果提供了 -Help 参数，则显示帮助信息
     if ($Help) {
@@ -70,7 +70,8 @@ if (-not $MyInvocation.BoundParameters.ContainsKey('DirectoryPath') -or -not $My
         if ($file.Length -lt $SizeThresholdKB * 1kb) {
             if ($DryRun) {
                 Write-Host "File to be removed (dry run): $($file.FullName)"
-            } else {
+            }
+            else {
                 Remove-Item -Path $file.FullName -Force
                 Write-Host "Removed file: $($file.FullName)"
             }

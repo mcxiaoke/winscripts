@@ -3,22 +3,22 @@ setlocal enabledelayedexpansion
 
 set "root_dir=%~1"
 
-rem ╠ИюЗд©б╪╡╒╫╚╫А╧Ш╠ё╢Ф╣╫аый╠нд╪Ч
+rem И│█Е▌├Г⌡╝Е╫∙Е╧╤Е╟├Г╩⌠Ф·°Д©²Е╜≤Е┬╟Д╦╢Ф≈╤Ф√┤Д╩╤
 set "temp_file=%temp%\zip_list.tmp"
 dir /s /b "%root_dir%\*.m4a" > "%temp_file%"
 
-rem ╪Л╡Ийг╥Ясп╢Щ╫Бя╧╣д ZIP нд╪Ч
+rem Фё─Ф÷╔Ф≤╞Е░╕Ф°┴Е╬┘Х╖ёЕ▌▀Г └ ZIP Ф√┤Д╩╤
 if not exist "%temp_file%" (
-    echo ц╩спур╣╫ ZIP нд╪Ч
+    echo Ф╡║Ф°┴Ф┴╬Е┬╟ ZIP Ф√┤Д╩╤
     exit /b 1
 )
 
-rem ╠ИюЗаый╠нд╪Чжп╣дц©р╩╦Ж ZIP нд╪Ч╡╒╫Бя╧
+rem И│█Е▌├Д╦╢Ф≈╤Ф√┤Д╩╤Д╦╜Г └Ф╞▐Д╦─Д╦╙ ZIP Ф√┤Д╩╤Е╧╤Х╖ёЕ▌▀
 for /f "usebackq delims=" %%F in ("%temp_file%") do (
-    echo ©╙й╪╫Бя╧нд╪Чё╨%%F
+    echo Е╪─Е╖▀Х╖ёЕ▌▀Ф√┤Д╩╤О╪ %%F
 )
 
-rem и╬ЁЩаый╠нд╪Ч
+rem Е┬═И≥╓Д╦╢Ф≈╤Ф√┤Д╩╤
 rem del "%temp_file%"
 
 endlocal

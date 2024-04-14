@@ -1,7 +1,7 @@
 param ( [string]$path = "")
 
 
-function Set-Wallpaper($image){
+function Set-Wallpaper($image) {
   $source = @"
   using System;
   using System.Runtime.InteropServices;
@@ -24,7 +24,7 @@ function Set-Wallpaper($image){
     
   $fWinIni = $UpdateIniFile -bor $SendChangeEvent
     
-  $ret = [Params]::SystemParametersInfo($SPI_SETDESKWALLPAPER, 0, $Image, $fWinIni)
-  }
+  [Params]::SystemParametersInfo($SPI_SETDESKWALLPAPER, 0, $Image, $fWinIni)
+}
   
-  Set-Wallpaper path
+Set-Wallpaper path

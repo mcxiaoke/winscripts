@@ -1,1 +1,0 @@
-node F:\Develop\projects\node-labs.js\scripts\autowallpaper.js
