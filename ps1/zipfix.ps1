@@ -1,12 +1,3 @@
-# /*
-# * Project: ps1
-# * Created: 2024-04-14 16:55:11
-# * Modified: 2024-04-14 16:55:11
-# * Author: mcxiaoke (github@mcxiaoke.com)
-# * License: Apache License 2.0
-# */
-
-
 Write-Host "======================================="
 Write-Host "-"
 Write-Host "ZipFix小工具"
@@ -45,26 +36,16 @@ if ($option -eq "1") {
     Write-Host "用户取消，停止执行后续处理。"
     exit
 }
-elseif ($option -eq "2") {
-    Write-Host "用户选择解压操作"
-}
-elseif ($option -eq "3") {
-    Write-Host "用户选择修复操作"
-}
-elseif ($option -eq "4") {
-    Write-Host "用户选择检查操作"
-}
-else {
+elseif ($option -ge "4") {
     Write-Host "输入无效，请输入操作序号 1、2、3 或 4。"
     exit 1
 }
 
+# 检查并设置文件名编码
 $user_encoding = Read-Host "指定文件名编码："
-
 if ($user_encoding) {
     $encoding = $user_encoding
 }
-
 if ($encoding) {
     Write-Host "文件名编码：$encoding"
 }
@@ -76,53 +57,56 @@ if ($confirm -ne "y" -and $confirm -ne "yes") {
     exit
 }
 
+# 定义处理函数
+function Invoke-ZipUnicode {
+    param (
+        [string]$FilePath,
+        [string]$Option,
+        [string]$Encoding
+    )
+
+    $CurrentPath = Split-Path -Path $FilePath -Parent
+    $FileName = Split-Path -Path $FilePath -Leaf
+    $NameNoExt = [System.IO.Path]::GetFileNameWithoutExtension($FilePath)
+    $NameFixed = $NameNoExt + "_fixed.zip"
+    $FileFixed = Join-Path -Path $CurrentPath -ChildPath $NameFixed
+
+    if ($NameNoExt.EndsWith("_fixed")) {
+        Write-Host "忽略文件 ""$FileName"""
+        return
+    }
+
+    Set-Location $CurrentPath
+
+    switch ($Option) {
+        "2" {
+            Write-Host "解压文件 ""$FileName"""
+            $zipArgs = @("--extract", $FileName)
+        }
+        "3" {
+            if (Test-Path $FileFixed) {
+                Write-Host "文件已存在 ""$NameFixed"""
+                return
+            }
+            Write-Host "修复文件 ""$FileName"""
+            $zipArgs = @("--fix", $FileName)
+        }
+        "4" {
+            Write-Host "检查文件 ""$FileName"""
+            $zipArgs = @($FileName)
+        }
+    }
+
+    if ($Encoding) {
+        $zipArgs = $zipArgs + @("--encoding", $Encoding)
+    }
+
+    zipu @zipArgs
+
+    Set-Location $PSScriptRoot
+}
+
 # 递归遍历目录
 Get-ChildItem -Path $root_dir -Recurse -Filter *.zip | ForEach-Object {
-    $current_path = $_.DirectoryName
-    $fileName = $_.Name
-    $nameNoExt = $_.BaseName
-
-    # 检查文件名是否以 "_fixed" 结尾，如果是则跳过
-    if ($nameNoExt.EndsWith("_fixed")) {
-        Write-Host "忽略文件 ""$fileName"""
-    }
-    else {
-        # 处理文件
-        Set-Location $current_path
-        if ($option -eq "2") {
-            Write-Host "解压文件 ""$fileName"""
-            if (-not $encoding) {
-                zipu --extract "$fileName"
-            }
-            else {
-                zipu --encoding $encoding --extract "$fileName"
-            }
-        }
-        elseif ($option -eq "3") {
-            $nameFixed = $nameNoExt + "_fixed.zip"
-            $fileFixed = Join-Path $current_path $nameFixed
-            if (Test-Path $fileFixed) {
-                Write-Host "文件已存在 ""$nameFixed"""
-            }
-            else {
-                Write-Host "修复文件 ""$fileName"""
-                if (-not $encoding) {
-                    zipu --fix "$fileName"
-                }
-                else {
-                    zipu --encoding $encoding --fix "$fileName"
-                }
-            }
-        }
-        elseif ($option -eq "4") {
-            Write-Host "检查文件 ""$fileName"""
-            if (-not $encoding) {
-                zipu "$fileName"
-            }
-            else {
-                zipu --encoding $encoding "$fileName"
-            }
-        }
-        Set-Location $PSScriptRoot
-    }
+    Invoke-ZipUnicode -FilePath $_.FullName -Option $option -Encoding $encoding
 }
