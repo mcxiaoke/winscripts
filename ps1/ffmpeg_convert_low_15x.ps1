@@ -28,10 +28,10 @@ Get-ChildItem -Path $target_folder -Recurse -Include *.mp4, *.mkv, *.avi, *.mov,
 
         Write-Host "处理文件 $input_filepath"
         # 压缩视频文件并调整速度，保存到原文件同一目录
-        ffmpeg -hide_banner -i $input_filepath -filter_complex "[0:v]setpts=PTS/1.5, scale=w=min(iw\,1080):h=min(ih\,1080)[v];[0:a]atempo=1.5[a]" -map "[v]" -map "[a]" -c:v hevc_nvenc -bufsize 2000k -maxrate 500k -cq 23 -c:a libfdk_aac -profile:a aac_he -b:a 48k $temp_filepath
+        ffmpeg -hide_banner -i $input_filepath -filter_complex "[0:v]setpts=PTS/1.5, scale=w=min(iw\,1080):h=min(ih\,1080)[v];[0:a]atempo=1.5[a]" -map "[v]" -map "[a]" -c:v hevc_nvenc -bufsize 2000k -maxrate 500k -cq 23 -c:a libfdk_aac -profile:a aac_he -b:a 48k -movflags +faststart$temp_filepath
 
         if ($LASTEXITCODE -eq 0) {
-            Write-Host "转换成功，重命名为指定的文件名"
+            Write-Host "转换成功 $output_filepath"
             Move-Item $temp_filepath $output_filepath -Force
         }
         else {

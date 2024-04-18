@@ -52,7 +52,7 @@ function RecurseDirectory ($dir) {
             if (-not ($oldFileName -match "_${width}x${height}$extension$")) {
                 # 如果新文件名与原文件名不同，进行重命名操作
                 if ($newFileName -ne $oldFileName) {
-                    #Rename-Item -Path $file.FullName -NewName $newFileName
+                    # Rename-Item -Path $file.FullName -NewName $newFileName
                     Write-Host "Renamed: $newFileName"
                 }
             }
@@ -62,7 +62,7 @@ function RecurseDirectory ($dir) {
 
             # 创建一个对象来存储文件信息
             $fileInfo = New-Object PSObject -Property @{
-                FileName   = $file.Name
+                FileName   = $file.FullName
                 FileType   = $codecName
                 FileSize   = $file.Length
                 Resolution = "$width x $height"
